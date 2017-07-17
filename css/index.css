@@ -1,0 +1,39 @@
+html {
+  font-size: 10px;
+}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+.canvas {
+  display: block;
+  margin: 0 auto;
+}
+.tip {
+  display: none;
+  z-index: 99999;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.tip_content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20rem;
+  height: 20rem;
+  line-height: 20rem;
+  overflow-x: hidden;
+  transform: translate(-50%, -50%);
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.8);
+  overflow-y: scroll;
+  text-align: center;
+  font-size: 2rem;
+}
+/*# sourceMappingURL=index.css.map */
