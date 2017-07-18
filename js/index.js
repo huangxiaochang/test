@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 	canvas.css('backgroundColor','#EFF2F7');
 	canvas.attr("width",canvasLength+"rem");//设置画布的宽度
 	canvas.attr("height",canvasLength+"rem");//设置画布的高度
-	canvas.css('marginTop',(height-width-10)/2);
+	canvas.css('marginTop',8+"rem");
 
 	// 绘制棋盘网格
 	draw(context);
