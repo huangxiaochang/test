@@ -7,11 +7,11 @@ jQuery(document).ready(function($) {
 	var tip = $("#tip");//提示信息div
 	var tip_content = $("#tip_content");//提示信息内容
 	var context = canvas.get(0).getContext("2d");//获取画布的上下文
-	var canvasLength = width-60;//画布的大小
+	var canvasLength = width;//画布的大小
 	canvas.css('backgroundColor','#EFF2F7');
 	canvas.attr("width",canvasLength+"rem");//设置画布的宽度
 	canvas.attr("height",canvasLength+"rem");//设置画布的高度
-	canvas.css('marginTop',(height-width+60)/2);
+	canvas.css('marginTop',(height-width+10)/2);
 	draw(context);
 
 	// 画棋盘网格

@@ -4,6 +4,6 @@
 // 		alert(1)
 // 	});
 // })
-//var home = 'a'
+// var home = 'a'
 
-//export default home
+// export default home
