@@ -21,12 +21,13 @@ jQuery(document).ready(function($) {
     // 设置不悔棋的状态，目的为赢棋时候能进行悔棋重玩
     var isNoRetract = true ;
 	// 画布宽高和样式的设置
-	canvas.css('backgroundColor','#EFF2F7');
+	// canvas.css('backgroundColor','#EFF2F7');
 	canvas.attr("width",canvasLength+"rem");//设置画布的宽度
 	canvas.attr("height",canvasLength+"rem");//设置画布的高度
 	canvas.css('marginTop',8+"rem");
 
 	// 绘制棋盘网格
+	drawText(context);
 	draw(context);
 
 	// 画棋盘网格
@@ -35,6 +36,8 @@ jQuery(document).ready(function($) {
 		// 先清除画布中的图形
 		context.clearRect(0, 0, canvasLength, canvasLength);
 		context.strokeStyle = "#99A9BF";
+		context.globalCompositeOperation = "destination-over";
+		context.globalAlpha = 0.8;
 		for (var i = 0; i < 15; i++) {
 			context.beginPath();
 			context.moveTo(len/2+i*len, len/2);
@@ -47,6 +50,24 @@ jQuery(document).ready(function($) {
 			context.closePath();
 			context.stroke();
 		}
+	}
+
+	// 绘制棋盘印彩
+	function drawText(context) {
+		var img = new Image();
+		img.src = "img/bg.png";
+		// 不能直接使用 context.drawImage(img,0,0);这样绘制不出来，原因是图片还没有加载的时候，
+		//已经执行了context.drawImage();函数
+		context.globalCompositeOperation = "destination-over";
+		context.globalAlpha = 0.5;
+		img.onload = function() {
+			context.drawImage(img,0,0, canvasLength, canvasLength);
+		}
+		// context.globalCompositeOperation = "source-over";
+		// context.fillStyle = "rgba(100,150,185,0.15)";
+		// context.font = "9rem Calibri";
+		// var textLength = context.measureText("对      弈");
+		// context.fillText("对      弈", (canvasLength-textLength.width)/2, canvasLength/2);
 	}
 
 	// 开始进入页面时，初始化页面
@@ -68,6 +89,7 @@ jQuery(document).ready(function($) {
 		initBoard();
 		// 重绘网格
 		draw(context);
+		drawText(context);
 		// 把是否是上一局的状态设置成false
 		flag = false;
 		// 清空悔棋路径
@@ -93,6 +115,10 @@ jQuery(document).ready(function($) {
 		context.lineTo(i*length+length/2,j*length+length);
 		context.closePath();
 		context.stroke();
+
+		// 重绘网格
+		// draw(context);
+		drawText(context);
 	}
 
 	// 悔棋功能，只能悔棋一步
@@ -168,6 +194,10 @@ jQuery(document).ready(function($) {
 			g2.addColorStop(1,'#636766');
 			context.fillStyle = g2;
 		}
+
+		context.globalCompositeOperation = "source-over";
+		context.globalAlpha = 1;
+
 		context.beginPath();
 		context.arc(i*radius+radius/2, j*radius+radius/2, radius/2, 0, 2*Math.PI, false);
 		context.closePath();
