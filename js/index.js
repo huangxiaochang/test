@@ -8,56 +8,134 @@ jQuery(document).ready(function($) {
 	var tip_content = $("#tip_content");//提示信息内容
 	var context = canvas.get(0).getContext("2d");//获取画布的上下文
 	var canvasLength = width;//画布的大小
+	var agin = $("#agin");//获取重玩按钮
+	var retract = $("#retract").attr("disabled", true);//获取悔棋按钮,并且开始时不可用
+	// 使用一个二维数组来保存已下的棋，0为空，1为白色，2为黑色
+	var board = [];
+	// 记录玩家对战目前的玩家的颜色
+	var me = true
+	// 上一局赢过之后要按重新开始才能下棋
+	var flag = false;
+	// 定义一个数组存储所有走过的棋子的坐标，为悔棋做准备
+	var currentPath = [];
+    // 设置不悔棋的状态，目的为赢棋时候能进行悔棋重玩
+    var isNoRetract = true ;
+	// 画布宽高和样式的设置
 	canvas.css('backgroundColor','#EFF2F7');
 	canvas.attr("width",canvasLength+"rem");//设置画布的宽度
 	canvas.attr("height",canvasLength+"rem");//设置画布的高度
-	canvas.css('marginTop',(height-width+10)/2);
+	canvas.css('marginTop',(height-width-10)/2);
+
+	// 绘制棋盘网格
 	draw(context);
 
 	// 画棋盘网格
 	function draw(context) {
-		// let len = canvasLength/16;
 		var len = canvasLength/16;
+		// 先清除画布中的图形
+		context.clearRect(0, 0, canvasLength, canvasLength);
 		context.strokeStyle = "#99A9BF";
-		// for (let i = 0; i < 15; i++) {
 		for (var i = 0; i < 15; i++) {
+			context.beginPath();
 			context.moveTo(len+i*len, len);
-			context.lineTo(len+i*len, len*15)
-			context.stroke()
+			context.lineTo(len+i*len, len*15);
+			context.closePath();
+			context.stroke();
+			context.beginPath();
 			context.moveTo(len, len+i*len);
-			context.lineTo(len*15, len+i*len)
-			context.stroke()
-		}
-	}
-	// 使用一个二维数组来保存已下的棋，0为空，1为白色，2为黑色
-	var board = []
-	// for (let i = 0; i < 15; i++) {
-	for (var i = 0; i < 15; i++) {
-		board[i] = []
-		// for(let j = 0; j < 15; j++) {
-		for(var j = 0; j < 15; j++) {
-			board[i][j] = 0
+			context.lineTo(len*15, len+i*len);
+			context.closePath();
+			context.stroke();
 		}
 	}
 
-	// 记录玩家对战目前的玩家的颜色
-	var me = true
+	// 开始进入页面时，初始化页面
+	initBoard();
+
+	// 初始化棋盘颜色状态
+	function initBoard() {
+		for (var i = 0; i < 15; i++) {
+			board[i] = []
+			for(var j = 0; j < 15; j++) {
+				board[i][j] = 0
+			}
+		}
+	}
+	
+	// 按钮重玩按钮时，把棋盘设置成初始化状态
+	agin.click(function(event) {
+		// 初始化颜色状态
+		initBoard();
+		// 重绘网格
+		draw(context);
+		// 把是否是上一局的状态设置成false
+		flag = false;
+		// 清空悔棋路径
+		currentPath = [];
+		// 从白起开始
+		me = true;
+	})
+
+	// 悔棋时，清空最后一步所下的棋子
+	function clearArea(i, j) {
+		var length = canvasLength/16;
+		// 清空棋子所在的矩形区域
+		context.clearRect(i*length+length/2, j*length+length/2, length, length);
+		context.strokeStyle = "#99A9BF";
+		// 重绘该矩形区域的网格
+		context.beginPath();
+		context.moveTo(i*length+length/2,j*length+length);
+		context.lineTo(i*length+length*3/2,j*length+length);
+		context.closePath();
+		context.stroke();
+		context.beginPath();
+		context.moveTo(i*length+length,j*length+length/2);
+		context.lineTo(i*length+length,j*length+length*3/2);
+		context.closePath();
+		context.stroke();
+	}
+
+	// 悔棋功能，只能悔棋一步
+	retract.click(function(event) {
+		var currentChess = {}
+		// 从悔棋路径中获取最后一步棋
+		currentChess = currentPath.pop();
+		// 清空已经绘制的图片
+		clearArea(currentChess.i, currentChess.j);
+		// 把颜色状态设置成0
+		board[currentChess.i][currentChess.j] = 0;
+		// 把玩家设置成上一个玩家
+		me = !me;
+		// 把不悔棋状态改成false
+		isNoRetract = false;
+		// 如果悔棋路径中没有棋子
+		if (currentPath.length === 0) {
+			// 把悔棋按钮状态设置成不可用状态
+			isable(true);
+			return false;
+		}
+	})
+
+	// 设置悔棋按钮的可用状态
+	function isable(status) {
+		retract.attr("disabled", status);
+	}
 
 	// 获取鼠标在画布中的点击的相对的位置
 	canvas.click(function(event) {
-		// let x = 0;
-		// let y = 0;
+		// 如果是上一局赢过之后并且没有悔棋的话，还没有清空棋盘，不能开始新的一局
+		if (flag && isNoRetract) {
+			tip.css('display','block');
+			tip_content.html('请重新开始新的一局');
+			return false;
+		}
 		var x = 0;
 		var y = 0;
 		// 获取画布相对于文档的位置
-		// let canvasPos = this.getBoundingClientRect();
 		var canvasPos = this.getBoundingClientRect();
 		x = event.clientX-canvasPos.left;
 		y = event.clientY-canvasPos.top;
 		// 转化成坐标
-		// let len = canvasLength/16;
-		// let i = 0;
-		// let j = 0;
 		var len = canvasLength/16;
 		var i = 0;
 		var j = 0;
@@ -94,10 +172,20 @@ jQuery(document).ready(function($) {
 		context.arc((i+1)*radius, (j+1)*radius, radius/2, 0, 2*Math.PI, false);
 		context.closePath();
 		context.fill();
+
+		// 加入悔棋路径
+		currentPath.push({
+			i: i,
+			j: j
+		})
+		// 同时把悔棋按钮状态改成可用
+		isable(false);
+
 		//  把棋盘数组board对弈的i,j设置成相应的颜色，并判断输赢
 		if (me) {
 			// 第一个玩家的棋子为白色
 			board[i][j] = 1;
+			me = false;//到对手下棋
 			if (isWin(i, j, 1)) {
 				tip.css('display','block');
 				tip_content.html('恭喜!白棋赢了');
@@ -110,15 +198,12 @@ jQuery(document).ready(function($) {
 					tip_content.html('平局');
 					return false;
 				}
-				else {
-					// 轮到对手下棋
-					me = false;
-				}
 			}
 		}
 		// 第二个玩家的棋子为黑色
 		else {
 			board[i][j] = 2;
+			me = true;//到对手下棋
 			if (isWin(i, j, 2)) {
 				tip.css('display','block');
 				tip_content.html('恭喜!黑棋赢了');
@@ -131,10 +216,6 @@ jQuery(document).ready(function($) {
 					tip_content.html('平局');
 					return false;
 				}
-				else {
-					// 轮到对手下棋
-					me = true;
-				}
 			}
 		}
 	}
@@ -142,11 +223,7 @@ jQuery(document).ready(function($) {
 	// 判断每次下棋之后，是否获得胜利，方法是已每次下棋的坐标为中心，判断4个方向的9个坐标中是否有连续5个坐标的
 	//颜色与中心点相同
 	function isWin(i, j, color) {
-		// let flag = false;
-		// let count = 0
-		// // 判断是否存在该点
-		// let k = 0;
-		// let t = 0;
+		// 判断是否存在该点
 		var flag = false;
 		var count = 0
 		// 判断是否存在该点
@@ -157,7 +234,7 @@ jQuery(document).ready(function($) {
 	
 		// 判断横向
 		count = 0;
-		// for(let m = k; m <= t; m++) {
+
 		for(var m = k; m <= t; m++) {
 			// 同色
 			if (board[m][j] === color) {
@@ -175,7 +252,7 @@ jQuery(document).ready(function($) {
 		t = existPos(j).j;
 		count = 0;
 		flag = false;
-		// for(let m = k; m <= t; m++) {
+
 		for(var m = k; m <= t; m++) {
 			// 同色
 			if (board[i][m] === color) {
@@ -193,7 +270,7 @@ jQuery(document).ready(function($) {
 		t = existPos(i).j;
 		count  = 0;
 		flag = false;
-		// for(let m = k; m <= t; m++) {
+
 		for(var m = k; m <= t; m++) {
 			if (m <= i) {
 				// 同色
@@ -222,7 +299,7 @@ jQuery(document).ready(function($) {
 		count  = 0;
 		flag = false;
 		// 判断反斜线
-		// for(let m = k; m <= t; m++) {
+
 		for(var m = k; m <= t; m++) {
 			if (m <= i) {
 				// 同色
@@ -287,6 +364,7 @@ jQuery(document).ready(function($) {
 	})
 	// 关闭提示框
 	tip.click(function(event) {
+		flag = true;
 		tip.css("display","none");
 	})
 
