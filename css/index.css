@@ -10,6 +10,7 @@ body {
 .canvas {
   display: block;
   margin: 0 auto;
+  box-shadow: 0.2rem 0.5rem 0.5rem #bdbdbd;
 }
 .tip {
   display: none;
@@ -37,11 +38,16 @@ body {
   font-size: 2rem;
 }
 .btn_group {
-  margin-top: 2rem;
+  margin-top: 3rem;
   text-align: center;
 }
 .btn_item {
   margin-left: 1rem;
+  background-color: #00b0ff;
+  color: #eceff1;
+  border: none;
+  outline: none;
+  border-radius: 0.5rem;
 }
 .header {
   text-align: center;
@@ -58,14 +64,4 @@ body {
   right: 0;
   buttom: 0;
 }
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
 /*# sourceMappingURL=index.css.map */

@@ -7,7 +7,7 @@ jQuery(document).ready(function($) {
 	var tip = $("#tip");//提示信息div
 	var tip_content = $("#tip_content");//提示信息内容
 	var context = canvas.get(0).getContext("2d");//获取画布的上下文
-	var canvasLength = width;//画布的大小
+	var canvasLength = width-8;//画布的大小
 	var agin = $("#agin");//获取重玩按钮
 	var retract = $("#retract").attr("disabled", true);//获取悔棋按钮,并且开始时不可用
 	// 使用一个二维数组来保存已下的棋，0为空，1为白色，2为黑色
@@ -31,19 +31,19 @@ jQuery(document).ready(function($) {
 
 	// 画棋盘网格
 	function draw(context) {
-		var len = canvasLength/16;
+		var len = canvasLength/15;
 		// 先清除画布中的图形
 		context.clearRect(0, 0, canvasLength, canvasLength);
 		context.strokeStyle = "#99A9BF";
 		for (var i = 0; i < 15; i++) {
 			context.beginPath();
-			context.moveTo(len+i*len, len);
-			context.lineTo(len+i*len, len*15);
+			context.moveTo(len/2+i*len, len/2);
+			context.lineTo(len/2+i*len, len/2+len*14);
 			context.closePath();
 			context.stroke();
 			context.beginPath();
-			context.moveTo(len, len+i*len);
-			context.lineTo(len*15, len+i*len);
+			context.moveTo(len/2, len/2+i*len);
+			context.lineTo(len/2+len*14, len/2+i*len);
 			context.closePath();
 			context.stroke();
 		}
@@ -78,19 +78,19 @@ jQuery(document).ready(function($) {
 
 	// 悔棋时，清空最后一步所下的棋子
 	function clearArea(i, j) {
-		var length = canvasLength/16;
+		var length = canvasLength/15;
 		// 清空棋子所在的矩形区域
-		context.clearRect(i*length+length/2, j*length+length/2, length, length);
+		context.clearRect(i*length, j*length, length, length);
 		context.strokeStyle = "#99A9BF";
 		// 重绘该矩形区域的网格
 		context.beginPath();
-		context.moveTo(i*length+length/2,j*length+length);
-		context.lineTo(i*length+length*3/2,j*length+length);
+		context.moveTo(i*length,j*length+length/2);
+		context.lineTo(i*length+length,j*length+length/2);
 		context.closePath();
 		context.stroke();
 		context.beginPath();
-		context.moveTo(i*length+length,j*length+length/2);
-		context.lineTo(i*length+length,j*length+length*3/2);
+		context.moveTo(i*length+length/2,j*length);
+		context.lineTo(i*length+length/2,j*length+length);
 		context.closePath();
 		context.stroke();
 	}
@@ -136,7 +136,7 @@ jQuery(document).ready(function($) {
 		x = event.clientX-canvasPos.left;
 		y = event.clientY-canvasPos.top;
 		// 转化成坐标
-		var len = canvasLength/16;
+		var len = canvasLength/15;
 		var i = 0;
 		var j = 0;
 		i = Math.round(Math.floor(x/len));
@@ -157,19 +157,19 @@ jQuery(document).ready(function($) {
 		// me: true-白色，false-黑色
 		// 玩家对战时，第一个玩家的棋子颜色为白色
 		if (me) {
-			var g1 = context.createRadialGradient((i+1)*radius+2, (j+1)*radius-2, 13, (i+1)*radius+2, (j+1)*radius-2, 0);
+			var g1 = context.createRadialGradient(i*radius+radius/2+2, j*radius+radius/2-2, 13, i*radius+radius/2+2, j*radius+radius/2, 0);
 			g1.addColorStop(0,'#d1d1d1');
 			g1.addColorStop(1,'#f9f9f9');
 			context.fillStyle = g1;
 		}
 		else {
-			var g2 = context.createRadialGradient((i+1)*radius+2, (j+1)*radius-2, 13, (i+1)*radius+2, (j+1)*radius-2, 0);
+			var g2 = context.createRadialGradient(i*radius+radius/2+2, j*radius+radius/2-2, 13, i*radius+radius/2+2, j*radius+radius/2, 0);
 			g2.addColorStop(0,'#0a0a0a');
 			g2.addColorStop(1,'#636766');
 			context.fillStyle = g2;
 		}
 		context.beginPath();
-		context.arc((i+1)*radius, (j+1)*radius, radius/2, 0, 2*Math.PI, false);
+		context.arc(i*radius+radius/2, j*radius+radius/2, radius/2, 0, 2*Math.PI, false);
 		context.closePath();
 		context.fill();
 
