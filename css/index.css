@@ -39,7 +39,7 @@ body {
   font-size: 2rem;
 }
 .btn_group {
-  margin-top: 3rem;
+  margin-top: 4rem;
   text-align: center;
 }
 .btn_item {
@@ -48,7 +48,16 @@ body {
   color: #eceff1;
   border: none;
   outline: none;
+  font-size: 1.6rem;
   border-radius: 0.5rem;
+}
+.btn_disable {
+  background-color: #58B7FF;
+  color: #E5E9F2;
+}
+.current_model {
+  background-color: #00b0ff;
+  color: #000;
 }
 .header {
   text-align: center;
@@ -65,8 +74,4 @@ body {
   right: 0;
   buttom: 0;
 }
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
-/*# sourceMappingURL=index.css.map */
 /*# sourceMappingURL=index.css.map */
