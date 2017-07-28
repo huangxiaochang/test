@@ -74,8 +74,8 @@ jQuery(document).ready(function($) {
 		context.globalCompositeOperation = "source-over";
 		context.fillStyle = "rgba(100,150,185,0.15)";
 		context.font = "9rem Calibri";
-		var textLength = context.measureText("对   弈");
-		context.fillText("对   弈", (canvasLength-textLength.width)/2, canvasLength/2);
+		var textLength = context.measureText("对 弈");
+		context.fillText("对 弈", (canvasLength-textLength.width)/2, canvasLength/2);
 		context.globalCompositeOperation = "destination-over";
 		context.globalAlpha = 0.5;
 		img.onload = function() {
